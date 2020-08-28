@@ -1,0 +1,3 @@
+D:\code\Javascript\Node\Primaxcoin\Primaxcoin\obj\Debug\Primaxcoin.njsprojAssemblyReference.cache
+D:\code\Javascript\Node\Primaxcoin\Primaxcoin\obj\Debug\Primaxcoin.njsproj.CoreCompileInputs.cache
+D:\code\Javascript\Node\Primaxcoin\Primaxcoin\bin\Microsoft.NodejsTools.WebRole.dll

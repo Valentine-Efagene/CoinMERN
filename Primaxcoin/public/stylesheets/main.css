@@ -1,0 +1,17 @@
+﻿body {
+  padding: 0px;
+  font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00b7ff;
+}
+
+a.active {
+  background-color: #d8d8f5;
+}
+
+.col-centered {
+  float: none;
+  margin: 0% auto;
+}
