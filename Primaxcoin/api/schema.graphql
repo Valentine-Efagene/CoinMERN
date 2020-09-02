@@ -1,0 +1,63 @@
+scalar GraphQLDate
+
+enum InvestmentPlan {
+  starter
+  basic
+  standard
+  superStandard
+  premium
+  superPremium
+}
+
+enum Gender {
+  male
+  female
+  other
+}
+
+type User {
+  username: String
+  firstName: String
+  lastName: String
+  address: String
+  country: String
+  phoneNumber: String
+  gender: Gender
+  email: String
+  referralID: String
+  referrer: String
+  passwordHash: String
+  secretQuestion: String
+  answer: String
+  dp: String
+  wallet: String
+  dateRegistered: GraphQLDate
+  admin: Boolean
+}
+
+"Toned down User, used as inputs, without server generated values."
+input UserInput {
+  username: String!
+  firstName: String!
+  lastName: String!
+  gender: Gender!
+  email: String
+  phoneNumber: String!
+  address: String!
+  referrer: String
+  referralID: String!
+  wallet: String!
+  dateRegistered: GraphQLDate!
+  password: String!
+  secretQuestion: String!
+  answer: String!
+}
+
+type Query {
+  about: String!
+  user(username: String): User
+}
+
+type Mutation {
+  setAboutMessage(message: String!): String
+}

@@ -30,6 +30,12 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="api\about.js" />
+    <Compile Include="api\api_handler.js" />
+    <Compile Include="api\db.js" />
+    <Compile Include="api\graphql_date.js" />
+    <Compile Include="api\issue.js" />
+    <Compile Include="api\users.js" />
     <Compile Include="app.js" />
     <Compile Include="routes\index.js" />
     <Compile Include="routes\users.js" />
@@ -59,6 +65,7 @@
     <Compile Include="src\UserContext.js" />
     <Compile Include="src\withToast.jsx" />
     <Compile Include="webpack.config.js" />
+    <Content Include="api\schema.graphql" />
     <Content Include="package.json" />
     <Content Include="public\images\home.png" />
     <Content Include="public\stylesheets\main.css" />
@@ -78,6 +85,7 @@
     <Content Include="views\error.pug" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="api\" />
     <Folder Include="src\" />
     <Folder Include="public\" />
     <Folder Include="public\images\" />
