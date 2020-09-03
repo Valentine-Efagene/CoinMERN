@@ -16,7 +16,6 @@ enum Gender {
 }
 
 type User {
-  username: String
   firstName: String
   lastName: String
   address: String
@@ -31,33 +30,41 @@ type User {
   answer: String
   dp: String
   wallet: String
-  dateRegistered: GraphQLDate
+  date: GraphQLDate
   admin: Boolean
 }
 
 "Toned down User, used as inputs, without server generated values."
 input UserInput {
-  username: String!
-  firstName: String!
-  lastName: String!
-  gender: Gender!
+  email: String!
+  passwordHash: String!
+}
+
+input UserUpdateInput {
+  firstName: String
+  lastName: String
+  gender: Gender
   email: String
-  phoneNumber: String!
-  address: String!
+  phoneNumber: String
+  address: String
   referrer: String
-  referralID: String!
-  wallet: String!
-  dateRegistered: GraphQLDate!
-  password: String!
-  secretQuestion: String!
-  answer: String!
+  referralID: String
+  wallet: String
+  passwordHash: String
+  secretQuestion: String
+  answer: String
+  city: String
+  postalCode: String
 }
 
 type Query {
   about: String!
-  user(username: String): User
+  user(email: String): User!
+  userList(offset: Int, count: Int, order: Boolean): [User!]!
 }
 
 type Mutation {
+  addUser(email: String, passwordHash: String): Boolean!
   setAboutMessage(message: String!): String
+  updateUser(username: String, changes: UserUpdateInput): Boolean!
 }

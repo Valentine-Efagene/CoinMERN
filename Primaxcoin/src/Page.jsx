@@ -2,6 +2,7 @@
 // import { useState } from 'react';
 
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Navbar,
   Grid,
@@ -20,15 +21,14 @@ import { faCoins } from '@fortawesome/free-solid-svg-icons';
 
 import SignInNavItem from './SignInNavItem.jsx';
 import Contents from './Contents.jsx';
-import Test from './Test.jsx';
 import Login from './Login.jsx';
 import ContactList from './ContactList.jsx';
 import UserContext from './UserContext.js';
+import { logIn, logOut } from './actions';
 
 export default class Page extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = { user: null };
     this.onUserChange = this.onUserChange.bind(this);
   }
@@ -74,6 +74,19 @@ function Footer() {
 
 function NavBar({ user }) {
   let contactAdd = '';
+  let update = '';
+  const dispatch = useDispatch();
+  dispatch(logIn());
+  const isLogged = useSelector((state) => state.isLogged);
+
+  if (isLogged) {
+    update = (
+      <LinkContainer to="/update">
+        <NavLink>Update Details</NavLink>
+      </LinkContainer>
+    );
+  }
+
   if (user) {
     contactAdd = (
       <LinkContainer to="/ContactAdd">
@@ -101,6 +114,7 @@ function NavBar({ user }) {
               <NavItem>About</NavItem>
             </NavLink>
           </LinkContainer>
+          {update}
           {contactAdd}
         </Nav>
         <Nav pullRight>

@@ -10,10 +10,14 @@ const resolvers = {
   Query: {
     about: () => aboutMessage,
     user: users.get,
+    userList: users.userList,
   },
   Mutation: {
+    addUser: users.add,
     setAboutMessage: setMessage,
+    updateUser: users.update,
   },
+  GraphQLDate,
 };
 
 const server = new ApolloServer({

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "vs_start": "node app",
-    "start": "nodemon app.js",
+    "start": "nodemon -e js,graphql,env app.js",
     "build": "webpack",
     "compile": "webpack --mode production",
     "watch": "webpack --watch"
