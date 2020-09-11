@@ -1,25 +1,17 @@
-export const increment = (multiple) => {
+import { logIn, logOut } from './email.js';
+
+const increment = (multiple) => {
   return {
     type: 'INCREMENT',
     payload: multiple,
   };
 };
 
-export const decrement = () => {
+const decrement = () => {
   return {
     type: 'DECREMENT',
     payload: multiple,
   };
 };
 
-export const logIn = () => {
-  return {
-    type: 'SIGN_IN',
-  };
-};
-
-export const logOut = () => {
-  return {
-    type: 'SIGN_OUT',
-  };
-};
+export { increment, decrement, logIn, logOut };

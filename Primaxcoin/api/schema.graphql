@@ -34,6 +34,13 @@ type User {
   admin: Boolean
 }
 
+type ResetToken {
+  email: String!
+  expiration: GraphQLDate!
+  token: String!
+  used: Int!
+}
+
 "Toned down User, used as inputs, without server generated values."
 input UserInput {
   email: String!
@@ -60,11 +67,16 @@ input UserUpdateInput {
 type Query {
   about: String!
   user(email: String): User!
+  auth(email: String!, passwordHash: String!): Boolean!
   userList(offset: Int, count: Int, order: Boolean): [User!]!
+  getResetToken(token: String): ResetToken!
+  getResetTokenWithToken(token: String): ResetToken!
 }
 
 type Mutation {
-  addUser(email: String, passwordHash: String): Boolean!
+  signUp(email: String, passwordHash: String): Boolean!
   setAboutMessage(message: String!): String
   updateUser(username: String, changes: UserUpdateInput): Boolean!
+  createResetToken(email: String!): Boolean!
+  deleteResetToken(email: String!): Boolean!
 }

@@ -5,7 +5,6 @@ import {
   Col,
   Card,
   Form,
-  FormGroup,
   Image,
   FormControl,
   Button,
@@ -15,9 +14,15 @@ import {
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faSignInAlt,
-  faSignOutAlt,
-  faUser,
+  faDatabase,
+  faMale,
+  faFemale,
+  faTransgender,
+  faTransgenderAlt,
+  faPhone,
+  faAddressBook,
+  faSync,
+  faSyncAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Spinner from './Spinner.jsx';
@@ -41,9 +46,6 @@ class UpdateDetails extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.dismissValidation = this.dismissValidation.bind(this);
     this.showValidation = this.showValidation.bind(this);
-    this.signUpWithEmail = this.signUpWithEmail.bind(this);
-    this.signInWithEmail = this.signInWithEmail.bind(this);
-    this.signOut = this.signOut.bind(this);
   }
 
   onChange(event, naturalValue) {
@@ -66,51 +68,13 @@ class UpdateDetails extends Component {
     this.setState({ loading: true });
   }
 
-  stoptLoading() {
+  stopLoading() {
     this.setState({ loading: false });
-  }
-
-  async signOut() {
-    const { showSuccess, showError } = this.props;
-    const { onUserChange } = this.context;
-    this.startLoading();
-    // sign out
-  }
-
-  async signUpWithEmail(email, password) {
-    const { showError, showSuccess } = this.props;
-    const { onUserChange } = this.context;
-    this.startLoading();
-    // sign up
-  }
-
-  async signInWithEmail(email, password) {
-    const { showError, showSuccess } = this.props;
-    const { onUserChange } = this.context;
-    this.startLoading();
-    // sign in
   }
 
   handleSubmit(event) {
     event.preventDefault();
     const { user, noAccount } = this.state;
-
-    if (
-      user.password === undefined ||
-      user.email === undefined ||
-      user.password === '' ||
-      user.email === ''
-    ) {
-      this.showValidation();
-    } else {
-      this.dismissValidation();
-
-      if (noAccount) {
-        this.signUpWithEmail(user.email, user.password);
-      } else {
-        this.signInWithEmail(user.email, user.password);
-      }
-    }
   }
 
   render() {
@@ -125,7 +89,7 @@ class UpdateDetails extends Component {
     let validationMessage;
     if (showingValidation) {
       validationMessage = (
-        <Alert bsStyle="danger" onDismiss={this.dismissValidation}>
+        <Alert bsStyle="danger" onClose={this.dismissValidation} dismissible>
           All fields must be filled
         </Alert>
       );
@@ -133,7 +97,7 @@ class UpdateDetails extends Component {
 
     let btn = (
       <Button disabled={false} bsStyle="primary" type="submit">
-        <FontAwesomeIcon icon={faSignInAlt} />
+        <FontAwesomeIcon icon={faSyncAlt} />
       </Button>
     );
 
@@ -154,57 +118,132 @@ class UpdateDetails extends Component {
     }
 
     return (
-      <Col className="col-centered" sm={12} md={6}>
+      <Col className="col-centered" sm={12} md={12} lg={12}>
         <Card>
           <Card.Header>
-            <Card.Title className="text-center">Email Login</Card.Title>
+            <Card.Title className="text-center">Details</Card.Title>
           </Card.Header>
           <Card.Body>
             <Form horizontal onSubmit={this.handleSubmit}>
-              <FormGroup>
-                <Col className="col-centered">
-                  <Button
-                    variant="light"
-                    style={{
-                      border: 'none',
-                    }}
-                    disabled={user !== null}
-                    onClick={() => {
-                      this.setState({ noAccount: true });
-                    }}
-                  >
-                    Want to create an account?
-                  </Button>
-                </Col>
-              </FormGroup>
-              <FormGroup>
-                <Col className="col-centered">
-                  <FormControl
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <Form.Control
                     type="email"
                     placeholder="Email"
                     name="email"
                     onChange={this.onChange}
                   />
-                </Col>
-              </FormGroup>
-              <FormGroup>
-                <Col className="col-centered">
-                  <FormControl
-                    name="password"
-                    placeholder="Password"
-                    type="password"
+                </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Control
+                    name="firstName"
+                    placeholder="First Name"
+                    type="text"
                     onChange={this.onChange}
                   />
-                </Col>
-              </FormGroup>
-              <FormGroup>
-                <Col className="col-centered">
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <FormControl
+                    type="text"
+                    placeholder="Middle Name"
+                    name="middleName"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Control
+                    name="lastName"
+                    placeholder="Last Name"
+                    type="text"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <Form.Control
+                    type="text"
+                    placeholder="Phone Number"
+                    name="Phone Number"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Control as="select" custom>
+                    <option></option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </Form.Control>
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <Form.Control
+                    type="text"
+                    placeholder="Address"
+                    name="address"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Control
+                    name="city"
+                    placeholder="City"
+                    type="text"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <Form.Control
+                    type="text"
+                    placeholder="State"
+                    name="State"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Control
+                    name="country"
+                    placeholder="Country"
+                    type="text"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <Form.Control
+                    type="text"
+                    placeholder="Wallet"
+                    name="wallet"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.File id="formcheck-api-custom" custom>
+                    <Form.File.Input />
+                    <Form.File.Label name="dp" data-browse="Browse">
+                      Custom file input
+                    </Form.File.Label>
+                    <Form.Control.Feedback type="valid">
+                      You did it!
+                    </Form.Control.Feedback>
+                  </Form.File>
+                </Form.Group>
+              </Form.Row>
+              <Form.Group>
+                <Col>
                   <ButtonToolbar>{btn}</ButtonToolbar>
                 </Col>
-              </FormGroup>
-              <FormGroup>
-                <Col className="col-centered">{validationMessage}</Col>
-              </FormGroup>
+              </Form.Group>
+              <Form.Group>
+                <Col>{validationMessage}</Col>
+              </Form.Group>
             </Form>
             {spinner}
           </Card.Body>

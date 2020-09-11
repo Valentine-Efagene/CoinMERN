@@ -4,7 +4,6 @@ import React, { Component, useState, useEffect } from 'react';
 import {
   Col,
   Card,
-  Nav,
   Form,
   FormGroup,
   Image,
@@ -14,6 +13,7 @@ import {
   Alert,
 } from 'react-bootstrap';
 import graphQLFetch from './graphQLFetch.js';
+import URLSearchParams from 'url-search-params';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -29,29 +29,64 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logIn, logOut } from './actions';
 import img from './assets/images/home.png';
 import './assets/css/styles.css';
+import { extendSchemaImpl } from 'graphql/utilities/extendSchema';
+import { func } from 'prop-types';
 
-function LogIn(props) {
-  const dispatch = useDispatch();
-  var [user, setUser] = useState({
-    email: useSelector((state) => state.email),
-  });
+var firstPass = true;
+
+function PasswordReset(props) {
+  const {
+    location: { search },
+  } = props;
+  const params = new URLSearchParams(search);
+  const a = params.get('token');
+
   var [loading, setLoading] = useState(false);
-  var [showValidation, setShowVaidation] = useState(false);
-  var [noAccount, setNoAccout] = useState(false);
+  var [showingValidation, setShowingValidation] = useState(false);
+  var [email, setEmail] = useState(null);
+  var [token, setToken] = useState(a);
+
+  if (a && firstPass) {
+    firstPass = false;
+    getEmail(a);
+  }
 
   function onChange(event, naturalValue) {
-    const { name, value: textValue } = event.target;
-    const prevUser = user;
+    const { value: textValue } = event.target;
+    console.log(event.target);
     const value = naturalValue === undefined ? textValue : naturalValue;
-    setUser({ ...prevUser, [name]: value });
+    setEmail(value);
+  }
+
+  async function getEmail(token) {
+    const { showError, showSuccess } = props;
+    startLoading();
+    const query = `query getResetTokenWithToken($token: String!){
+      getResetTokenWithToken(token: $token){email}
+    }`;
+
+    var success = false;
+
+    try {
+      await graphQLFetch(query, { token }, showError).then((data) => {
+        stopLoading();
+
+        if (data.data) {
+          success = true;
+          setEmail(data.data.getResetTokenWithToken.email);
+        }
+      });
+    } catch (err) {
+      showError(err.message);
+    }
   }
 
   function showValidation() {
-    setShowVaidation(true);
+    setShowingValidation(true);
   }
 
   function dismissValidation() {
-    setShowVaidation(false);
+    setShowingValidation(false);
   }
 
   function startLoading() {
@@ -62,19 +97,10 @@ function LogIn(props) {
     setLoading(false);
   }
 
-  async function signOut(event) {
-    event.preventDefault();
-    const { showSuccess, showError } = props;
-    startLoading();
-    dispatch(logOut());
-    stopLoading();
-    showSuccess('Logged out');
-  }
-
-  async function signUpWithEmail(email, password) {
+  async function resetPassword(email) {
     const { showError, showSuccess } = props;
     startLoading();
-    const query = `mutation signUp($email: String!, $passwordHash: String!) {
+    const query = `mutation cr($email: String!, $passwordHash: String!) {
       signUp(email: $email, passwordHash: $passwordHash)
     }`;
 
@@ -122,154 +148,75 @@ function LogIn(props) {
     dispatch(logIn(user.email));
   }
 
-  async function signInWithEmail(email, password) {
-    const { showError, showSuccess } = props;
-    startLoading();
-    const query = `query auth($email: String!, $passwordHash: String!) {
-      auth(email: $email, passwordHash: $passwordHash)
-    }`;
-
-    var { email, password } = user;
-    const passwordHash = password;
-    var success = false;
-
-    try {
-      const promise = await graphQLFetch(
-        query,
-        { email, passwordHash },
-        showError,
-      ).then((data) => {
-        stopLoading();
-        if (data !== null && data.auth === true) {
-          success = data.auth;
-          showSuccess('Logged in as ' + email);
-        }
-      });
-    } catch (err) {
-      showError(err.message);
-    }
-
-    if (!success) {
-      user.email = null;
-    }
-
-    dispatch(logIn(user.email));
-  }
-
   function handleSubmit(event) {
     event.preventDefault();
 
-    if (
-      user.password === undefined ||
-      user.email === undefined ||
-      user.password === '' ||
-      user.email === ''
-    ) {
+    if (email === null || email === '') {
       showValidation();
     } else {
       dismissValidation();
-
-      if (noAccount) {
-        signUpWithEmail(user.email, user.password);
-      } else {
-        signInWithEmail(user.email, user.password);
-      }
+      resetPassword(email);
     }
   }
 
   let spinner = null;
+  var validationMessage = '';
 
   if (loading) {
     spinner = <Spinner size={50} />;
   }
 
-  let validationMessage;
-  if (showValidation) {
-    validationMessage = (
-      <Alert bsStyle="danger" onClose={dismissValidation}>
-        All fields must be filled
-      </Alert>
-    );
-  }
-
-  let btn = '';
-
-  if (useSelector((state) => state.email)) {
-    btn = (
-      <Button disabled={false} bsStyle="primary" onClick={signOut}>
-        <FontAwesomeIcon icon={faSignOutAlt} />
-      </Button>
-    );
-  } else {
-    btn = (
-      <Button disabled={false} bsStyle="primary" type="submit">
-        <FontAwesomeIcon icon={faSignInAlt} />
-      </Button>
-    );
-  }
-
-  if (noAccount) {
-    btn = (
-      <Button disabled={false} bsStyle="primary" onClick={handleSubmit}>
-        <FontAwesomeIcon icon={faUser} />
-      </Button>
-    );
-  }
-
-  const loggedInEmail = useSelector((state) => state.email);
-
   return (
     <Col className="col-centered" sm={12} md={6}>
       <Card>
         <Card.Header>
-          <Card.Title className="text-center">Email Login</Card.Title>
+          <Card.Title className="text-center">Reset Password</Card.Title>
         </Card.Header>
         <Card.Body>
           <Form horizontal onSubmit={handleSubmit}>
             <FormGroup>
               <Col className="col-centered">
+                <FormControl
+                  type="email"
+                  defaultValue={email}
+                  placeholder="email"
+                  name="email"
+                  readOnly
+                  onChange={onChange}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup>
+              <Col className="col-centered">
+                <FormControl
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  onChange={onChange}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup>
+              <Col className="col-centered">
+                <FormControl
+                  type="password"
+                  placeholder="Retype Password"
+                  name="passwordRetyped"
+                  onChange={onChange}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup>
+              <Col className="col-centered">
                 <Button
-                  variant="light"
+                  type="submit"
+                  variant="primary"
                   style={{
                     border: 'none',
                   }}
-                  disabled={loggedInEmail !== null}
-                  onClick={() => {
-                    setNoAccout(true);
-                  }}
                 >
-                  Want to create an account?
+                  Reset
                 </Button>
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col className="col-centered">
-                <FormControl
-                  type="email"
-                  placeholder="Email"
-                  name="email"
-                  onChange={onChange}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col className="col-centered">
-                <FormControl
-                  name="password"
-                  placeholder="Password"
-                  type="password"
-                  onChange={onChange}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col className="col-centered">
-                <ButtonToolbar>{btn}</ButtonToolbar>
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <Col className="col-centered">
-                <Nav.Link href="/passwordreset">Forgot password?</Nav.Link>
               </Col>
             </FormGroup>
             <FormGroup>
@@ -286,6 +233,5 @@ function LogIn(props) {
   );
 }
 
-LogIn.contextType = UserContext;
-const LoginWithToast = withToast(LogIn);
-export default LoginWithToast;
+const PasswordResetWithToast = withToast(PasswordReset);
+export default PasswordResetWithToast;

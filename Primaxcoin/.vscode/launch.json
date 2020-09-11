@@ -5,15 +5,30 @@
   "version": "0.2.0",
   "configurations": [
     {
-        "name": "Launch localhost",
-        "type": "firefox",
-        "request": "launch",
-        "reAttach": true,
-        "url": "http://localhost:3000",
-        "pathMappings": [{
-            "url": "http://localhost",
-            "path": "${workspaceFolder}"
-        },
+      "type": "firefox",
+      "request": "attach",
+      "url": "http://localhost:3000",
+      "name": "Attach Firefox",
+      "pathMappings": [
+        {
+          "url": "http://localhost",
+          "path": "${workspaceFolder}"
+        }
+      ]
+    },
+    {
+      "name": "Launch localhost",
+      "type": "firefox",
+      "request": "launch",
+      "reAttach": true,
+      "url": "http://localhost:3000",
+      "pathMappings": [
+        {
+          "url": "http://localhost",
+          "path": "${workspaceFolder}"
+        }
+      ]
+    },
     {
       "type": "pwa-chrome",
       "request": "launch",

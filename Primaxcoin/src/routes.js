@@ -6,6 +6,8 @@ import UpdateDetails from './UpdateDetails.jsx';
 import ContactAdd from './ContactAdd.jsx';
 import ContactList from './ContactList.jsx';
 import ContactUpdate from './ContactUpdate.jsx';
+import ForgotPassword from './ForgotPassword.jsx';
+import PasswordReset from './PasswordReset.jsx';
 import Test from './Test.jsx';
 
 const routes = [
@@ -17,6 +19,8 @@ const routes = [
   { path: '/contactadd', component: ContactAdd },
   { path: '/contacts', component: ContactList },
   { path: '/edit/:id', component: ContactUpdate },
+  { path: '/forgotpassword', component: ForgotPassword },
+  { path: '/passwordreset', component: PasswordReset },
   { path: '*', component: NotFound },
 ];
 

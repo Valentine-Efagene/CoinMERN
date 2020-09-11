@@ -28,9 +28,21 @@ async function get(_, { email }) {
   });
 }
 
-async function add(_, { email, passwordHash }) {
+async function auth(_, { email, passwordHash }) {
   const db = getDb();
-  const date = new Date();
+  var sql =
+    'SELECT COUNT(*) as total FROM users WHERE email=? AND passwordHash=?';
+  return new Promise((resolve, reject) => {
+    res = db.query(sql, [email, passwordHash], function (err, result, fields) {
+      if (err) reject(err);
+      resolve(Boolean(result[0].total));
+    });
+  });
+}
+
+async function signUp(_, { email, passwordHash }) {
+  const db = getDb();
+  const date = new Date().toISOString();
   var sql = 'INSERT INTO users (email, passwordHash, date) VALUES (?, ?, ?)';
   return new Promise((resolve, reject) => {
     res = db.query(sql, [email, passwordHash, date], function (
@@ -106,8 +118,9 @@ async function update(_, { username, changes }) {
 }
 
 module.exports = {
-  add,
+  signUp,
   get,
+  auth,
   userList,
   update,
 };
