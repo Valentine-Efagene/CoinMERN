@@ -4,6 +4,7 @@ const GraphQLDate = require('./graphql_date.js');
 const { setMessage, getMessage } = require('./about.js');
 const users = require('./users.js');
 const resetTokens = require('./resetTokens.js');
+const { sendResetEmail } = require('./email.js');
 
 let aboutMessage = 'Issue Tracker API v1.0';
 
@@ -22,6 +23,7 @@ const resolvers = {
     updateUser: users.update,
     createResetToken: resetTokens.create,
     deleteResetToken: resetTokens.clear,
+    sendResetEmail: sendResetEmail,
   },
   GraphQLDate,
 };

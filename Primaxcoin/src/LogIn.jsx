@@ -269,7 +269,7 @@ function LogIn(props) {
             </FormGroup>
             <FormGroup>
               <Col className="col-centered">
-                <Nav.Link href="/passwordreset">Forgot password?</Nav.Link>
+                <Nav.Link href="/forgotpassword">Forgot password?</Nav.Link>
               </Col>
             </FormGroup>
             <FormGroup>

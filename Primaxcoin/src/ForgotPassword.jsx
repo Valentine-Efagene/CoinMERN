@@ -23,7 +23,6 @@ import {
 
 import Spinner from './Spinner.jsx';
 import withToast from './withToast.jsx';
-import UserContext from './UserContext.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { logIn, logOut } from './actions';
 import img from './assets/images/home.png';
@@ -61,65 +60,68 @@ function ForgotPassword(props) {
     setLoading(false);
   }
 
-  async function resetPassword(email) {
+  async function sendEmail(email, token) {
     const { showError, showSuccess } = props;
-    startLoading();
-    const query = `mutation cr($email: String!, $passwordHash: String!) {
-      signUp(email: $email, passwordHash: $passwordHash)
+
+    if (!email) {
+      showError('Please provide an email address');
+      return;
+    }
+
+    //startLoading();
+    const query = `mutation sendResetEmail($email: String!, $token: String!){
+      sendResetEmail(email: $email, token: $token)
     }`;
 
-    var { email, password } = user;
-    const passwordHash = password;
-    var success = false;
-
     try {
-      const promise = await graphQLFetch(
-        query,
-        { email, passwordHash },
-        showError,
-      ).then((result) => {
-        stopLoading();
+      await graphQLFetch(query, { email, token }, showError).then((data) => {
+        //stopLoading();
 
-        if (result) {
-          const { data, errors } = result;
-          var message = '';
-
-          if (errors) {
-            errors.forEach((error) => {
-              if (error.extensions.exception.errno === 1062) {
-                message += 'This email is already linked to an account\n';
-              }
-            });
-
-            showError(message);
-          }
-
-          if (data !== null && data.auth === true) {
-            success = result.data.auth;
-            showSuccess('Signed up as ' + email);
-          }
+        if (data.data) {
         }
       });
     } catch (err) {
       showError(err.message);
-      stopLoading();
     }
-
-    if (!success) {
-      user.email = null;
-    }
-
-    dispatch(logIn(user.email));
   }
 
-  function handleSubmit(event) {
+  async function getToken(email) {
+    const { showError, showSuccess } = props;
+    const query = `query getResetToken($email: String!){
+      getResetToken(email: $email){token}
+    }`;
+
+    return new Promise((resolve, reject) => {
+      try {
+        graphQLFetch(query, { email }, showError).then((data) => {
+          if (data.data) {
+            resolve(data.data.getResetToken.token);
+          } else {
+            resolve(null);
+          }
+        });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault();
+
+    const { showError, showSuccess } = props;
 
     if (email === null || email === '') {
       showValidation();
     } else {
-      dismissValidation();
-      resetPassword(email);
+      //dismissValidation();
+      const token = await getToken(email);
+      if (!token) {
+        showError('Invalid email address');
+        return;
+      }
+
+      sendEmail(email, token);
     }
   }
 

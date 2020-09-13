@@ -69,7 +69,7 @@ type Query {
   user(email: String): User!
   auth(email: String!, passwordHash: String!): Boolean!
   userList(offset: Int, count: Int, order: Boolean): [User!]!
-  getResetToken(token: String): ResetToken!
+  getResetToken(email: String): ResetToken!
   getResetTokenWithToken(token: String): ResetToken!
 }
 
@@ -79,4 +79,5 @@ type Mutation {
   updateUser(username: String, changes: UserUpdateInput): Boolean!
   createResetToken(email: String!): Boolean!
   deleteResetToken(email: String!): Boolean!
+  sendResetEmail(email: String!, token: String!): Boolean!
 }

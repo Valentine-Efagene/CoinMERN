@@ -1598,12 +1598,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons */ "./node_modules/@fortawesome/free-solid-svg-icons/index.es.js");
 /* harmony import */ var _Spinner_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Spinner.jsx */ "./src/Spinner.jsx");
 /* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
-/* harmony import */ var _UserContext_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./UserContext.js */ "./src/UserContext.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./actions */ "./src/actions/index.js");
-/* harmony import */ var _assets_images_home_png__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./assets/images/home.png */ "./src/assets/images/home.png");
-/* harmony import */ var _assets_css_styles_css__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./assets/css/styles.css */ "./src/assets/css/styles.css");
-/* harmony import */ var _assets_css_styles_css__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_assets_css_styles_css__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./actions */ "./src/actions/index.js");
+/* harmony import */ var _assets_images_home_png__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./assets/images/home.png */ "./src/assets/images/home.png");
+/* harmony import */ var _assets_css_styles_css__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./assets/css/styles.css */ "./src/assets/css/styles.css");
+/* harmony import */ var _assets_css_styles_css__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_assets_css_styles_css__WEBPACK_IMPORTED_MODULE_10__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -1635,12 +1634,11 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-
 function ForgotPassword(props) {
-  var dispatch = Object(react_redux__WEBPACK_IMPORTED_MODULE_8__["useDispatch"])();
+  var dispatch = Object(react_redux__WEBPACK_IMPORTED_MODULE_7__["useDispatch"])();
 
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({
-    email: Object(react_redux__WEBPACK_IMPORTED_MODULE_8__["useSelector"])(function (state) {
+    email: Object(react_redux__WEBPACK_IMPORTED_MODULE_7__["useSelector"])(function (state) {
       return state.email;
     })
   }),
@@ -1686,89 +1684,147 @@ function ForgotPassword(props) {
     setLoading(false);
   }
 
-  function resetPassword(_x) {
-    return _resetPassword.apply(this, arguments);
+  function sendEmail(_x, _x2) {
+    return _sendEmail.apply(this, arguments);
   }
 
-  function _resetPassword() {
-    _resetPassword = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(email) {
-      var showError, showSuccess, query, password, passwordHash, success, promise;
+  function _sendEmail() {
+    _sendEmail = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(email, token) {
+      var showError, showSuccess, query;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               showError = props.showError, showSuccess = props.showSuccess;
-              startLoading();
-              query = "mutation cr($email: String!, $passwordHash: String!) {\n      signUp(email: $email, passwordHash: $passwordHash)\n    }";
-              email = user.email, password = user.password;
-              passwordHash = password;
-              success = false;
-              _context.prev = 6;
-              _context.next = 9;
-              return Object(_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_2__["default"])(query, {
-                email: email,
-                passwordHash: passwordHash
-              }, showError).then(function (result) {
-                stopLoading();
 
-                if (result) {
-                  var data = result.data,
-                      errors = result.errors;
-                  var message = '';
-
-                  if (errors) {
-                    errors.forEach(function (error) {
-                      if (error.extensions.exception.errno === 1062) {
-                        message += 'This email is already linked to an account\n';
-                      }
-                    });
-                    showError(message);
-                  }
-
-                  if (data !== null && data.auth === true) {
-                    success = result.data.auth;
-                    showSuccess('Signed up as ' + email);
-                  }
-                }
-              });
-
-            case 9:
-              promise = _context.sent;
-              _context.next = 16;
-              break;
-
-            case 12:
-              _context.prev = 12;
-              _context.t0 = _context["catch"](6);
-              showError(_context.t0.message);
-              stopLoading();
-
-            case 16:
-              if (!success) {
-                user.email = null;
+              if (email) {
+                _context.next = 4;
+                break;
               }
 
-              dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_9__["logIn"])(user.email));
+              showError('Please provide an email address');
+              return _context.abrupt("return");
 
-            case 18:
+            case 4:
+              //startLoading();
+              query = "mutation sendResetEmail($email: String!, $token: String!){\n      sendResetEmail(email: $email, token: $token)\n    }";
+              _context.prev = 5;
+              _context.next = 8;
+              return Object(_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_2__["default"])(query, {
+                email: email,
+                token: token
+              }, showError).then(function (data) {
+                //stopLoading();
+                if (data.data) {}
+              });
+
+            case 8:
+              _context.next = 13;
+              break;
+
+            case 10:
+              _context.prev = 10;
+              _context.t0 = _context["catch"](5);
+              showError(_context.t0.message);
+
+            case 13:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[6, 12]]);
+      }, _callee, null, [[5, 10]]);
     }));
-    return _resetPassword.apply(this, arguments);
+    return _sendEmail.apply(this, arguments);
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  function getToken(_x3) {
+    return _getToken.apply(this, arguments);
+  }
 
-    if (email === null || email === '') {
-      showValidation();
-    } else {
-      dismissValidation();
-      resetPassword(email);
-    }
+  function _getToken() {
+    _getToken = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(email) {
+      var showError, showSuccess, query;
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              showError = props.showError, showSuccess = props.showSuccess;
+              query = "query getResetToken($email: String!){\n      getResetToken(email: $email){token}\n    }";
+              return _context2.abrupt("return", new Promise(function (resolve, reject) {
+                try {
+                  Object(_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_2__["default"])(query, {
+                    email: email
+                  }, showError).then(function (data) {
+                    if (data.data) {
+                      resolve(data.data.getResetToken.token);
+                    } else {
+                      resolve(null);
+                    }
+                  });
+                } catch (err) {
+                  reject(err);
+                }
+              }));
+
+            case 3:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+    return _getToken.apply(this, arguments);
+  }
+
+  function handleSubmit(_x4) {
+    return _handleSubmit.apply(this, arguments);
+  }
+
+  function _handleSubmit() {
+    _handleSubmit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(event) {
+      var showError, showSuccess, token;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              event.preventDefault();
+              showError = props.showError, showSuccess = props.showSuccess;
+
+              if (!(email === null || email === '')) {
+                _context3.next = 6;
+                break;
+              }
+
+              showValidation();
+              _context3.next = 13;
+              break;
+
+            case 6:
+              _context3.next = 8;
+              return getToken(email);
+
+            case 8:
+              token = _context3.sent;
+
+              if (token) {
+                _context3.next = 12;
+                break;
+              }
+
+              showError('Invalid email address');
+              return _context3.abrupt("return");
+
+            case 12:
+              sendEmail(email, token);
+
+            case 13:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
+    return _handleSubmit.apply(this, arguments);
   }
 
   var spinner = null;
@@ -1808,7 +1864,7 @@ function ForgotPassword(props) {
     className: "col-centered"
   }, validationMessage))), spinner), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Card"].Footer, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Image"], {
     className: "footer-image",
-    src: _assets_images_home_png__WEBPACK_IMPORTED_MODULE_10__["default"]
+    src: _assets_images_home_png__WEBPACK_IMPORTED_MODULE_9__["default"]
   }))));
 }
 
@@ -2275,7 +2331,7 @@ function LogIn(props) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["ButtonToolbar"], null, btn))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["FormGroup"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Col"], {
     className: "col-centered"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Nav"].Link, {
-    href: "/passwordreset"
+    href: "/forgotpassword"
   }, "Forgot password?"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["FormGroup"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Col"], {
     className: "col-centered"
   }, validationMessage))), spinner), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Card"].Footer, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Image"], {
@@ -2670,7 +2726,7 @@ function LogIn(props) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["ButtonToolbar"], null, btn))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["FormGroup"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Col"], {
     className: "col-centered"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Nav"].Link, {
-    href: "/passwordreset"
+    href: "/forgotpassword"
   }, "Forgot password?"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["FormGroup"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Col"], {
     className: "col-centered"
   }, validationMessage))), spinner), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Card"].Footer, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Image"], {
